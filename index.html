@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>TikTron</title>
+    <link rel="stylesheet" href="./vendor/css/bulma.min.css">
+  </head>
+  <body>
+    <!-- todo setup haml -->
+    <div class="container is-fluid">
+      <div class="container">
+        <h1 class="title">
+          TikTron
+        </h1>
+      </div>
+    </div>
+
+    We are using Node.js <span id="node-version"></span>,
+    Chromium <span id="chrome-version"></span>,
+    and Electron <span id="electron-version"></span>.
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
+
+.hashtag(id, options)
