@@ -1,0 +1,43 @@
+body {
+  background: #111111;
+  color: #EEEEEE;
+}
+
+p, .title {
+  color: #EEEEEE;
+}
+
+.arrow {
+  position: absolute;
+  top: 300px; /* TODO: center position via flexbox */
+  width: 40px;
+  height: 55px;
+  background: rgba(100, 100, 100, 0.4);
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+
+a.arrow {
+  color: #EEEEEE;
+}
+
+.arrow > span {
+  position: relative;
+  top: -4px;
+}
+
+.arrow-left {
+  left: 0;
+}
+
+.arrow-right {
+  right: 0px; /* width of the button */
+}
+
+h1.title {
+  font-size: 0.7em;
+}

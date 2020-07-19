@@ -3,10 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+
+    <!-- TODO: re-enable CSP - allow tiktokcdn.com -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
     <title>TikTron</title>
     <link rel="stylesheet" href="./vendor/css/bulma.min.css">
+    <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
     <!-- todo setup haml -->
@@ -18,12 +21,22 @@
       </div>
     </div>
 
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <a class="arrow-left arrow">
+      <span><</span>
+    </a>
+    <a class="arrow-right arrow">
+      <span>></span>
+    </a>
+
+    <video src="https://v16m.tiktokcdn.com/e062afbdcfb745ebc79f370cbc29eebc/5f144455/video/tos/useast2a/tos-useast2a-ve-0068c004/1090292a59614181bba1d4f01e0678c7/?a=1233&br=2050&bt=1025&cr=0&cs=0&dr=0&ds=3&er=&l=2020071907020101019021922310C2168D&lr=tiktok_m&mime_type=video_mp4&qs=0&rc=MzNoNzlyOjRwczMzNzczM0ApOGg6O2c7ODs2N2Y7M2g4M2deZ2RgbDAvcjBfLS02MTZzczFeYDYwNDBeMzRhXjUuYGI6Yw%3D%3D&vl=&vr=" autoplay ></video>
+    <!-- poster="posterimage.jpg" -->
+
+    <div class="debug is-hidden">
+      debug:
+      node: <span id="node-version"></span>
+      electron: <span id="electron-version"></span>
+    </div>
 
     <script src="./renderer.js"></script>
   </body>
 </html>
-
-.hashtag(id, options)
