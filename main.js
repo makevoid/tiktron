@@ -2,16 +2,13 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const EventEmitter = require('events')
 const tt = require('tiktok-scraper')
+const ipc = require('electron').ipcMain
 
 class MainEvents extends EventEmitter {}
 
 const mainEvents = new MainEvents()
 
 const ttOptions = { number: 1, noWaterMark: true }
-
-const loadVideo = () => {
-  console.log("loading video")
-}
 
 const transition = () => {
   console.log("starting css animation to replace video")
@@ -51,13 +48,10 @@ const bindVideoTags = () => {
   // vid.volume = 1 // 100%
 }
 
-
 const bindIPC = () => {
-  const ipc = require('electron').ipcMain
-
-  ipc.on('invokeAction', (event, data) => {
-    const result = processData(data)
-    event.sender.send('actionReply', result)
+  ipc.on('load-video', (event, data) => {
+    console.log("got video")
+    event.sender.send('load-video-reply', data)
   })
 }
 
@@ -65,6 +59,7 @@ const bindIPC = () => {
 
 const main = () => {
   bindIPC()
+  bindMainEvents()
 
   ;(async () => {
 

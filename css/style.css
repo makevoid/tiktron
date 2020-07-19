@@ -1,4 +1,4 @@
-body {
+html, body {
   background: #111111;
   color: #EEEEEE;
 }
@@ -39,5 +39,6 @@ a.arrow {
 }
 
 h1.title {
-  font-size: 0.7em;
+  font-size: 1em;
+  padding: 10px 0 10px 0;
 }
