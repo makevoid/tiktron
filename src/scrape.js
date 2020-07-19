@@ -1,12 +1,41 @@
 const tt = require('tiktok-scraper')
+const EventEmitter = require('events')
+
+class MainEvents extends EventEmitter {}
+
+const mainEvents = new MainEvents()
+
 const ttOptions = { number: 1, noWaterMark: true }
 
-;(async () => {
 
-  const hashtag = "doge"
-  const username = "makevoid"
-  // const results = await tt.hashtag(hashtag, ttOptions)
-  const results = await tt.user(username, ttOptions)
+const userEvent = ({ user }) => {
+  console.log("user:", user)
+}
 
-  console.log(results.collector)
-})()
+const bindMainEvents = () => {
+  // bind user events
+  mainEvents.on('ev-user', ({ user }) => userEvent({ user }))
+}
+
+const main = () => {
+  bindMainEvents()
+
+  ;(async () => {
+
+    const hashtag = "doge"
+    const username = "makevoid"
+    // const results = await tt.hashtag(hashtag, ttOptions)
+    const collection = await tt.user(username, ttOptions)
+    const users = results.collector
+    const user = users[0]
+
+    mainEvents.emit('ev-user', { antani: "true" })
+    console.log(Object.keys(user))
+    const { id, name, nickname, avatar, covers, videoUrl, webVideoUrl, playCount, shareCount } = user
+    const { defaultCover: default } = covers
+    // console.log(`nickname: ${nickname}`)
+    // console.log(user.id)
+  })()
+}
+
+main()
