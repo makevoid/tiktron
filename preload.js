@@ -63,6 +63,17 @@ const bindVideoTags = ({ videoElems }) => {
   vidMain // ... TODO implement
 }
 
+const bindHotkeys = () => {
+  window.addEventListener("keydown", event => {
+    if (event.keyCode === 37) { // left
+       actions.prevVideo()
+    }
+    if (event.keyCode === 39) { // right
+      actions.nextVideo()
+    }
+  })
+}
+
 const uiMain = () => {
   const buttons = {
     prevButton: document.querySelector(".arrow.arrow-left"),
@@ -76,6 +87,7 @@ const uiMain = () => {
   bindMainButtons({ buttons })
   bindVideoTags({ videoElems })
   bindEvents({ videoElems })
+  bindHotkeys()
 }
 
 const sampleCode = () => {
@@ -97,18 +109,17 @@ const tmpTestCode = () => {
   }, 4000)
 }
 
-
-const tmpTestCode2 = () => {
-  setInterval(() => {
-    console.log("simulating click next")
-    const elem = document.querySelector("a.arrow.arrow-right")
-    elem.click()
-  }, 7000)
-}
+// const tmpTestCode2 = () => {
+//   setInterval(() => {
+//     console.log("simulating click next")
+//     const elem = document.querySelector("a.arrow.arrow-right")
+//     elem.click()
+//   }, 7000)
+// }
 
 window.addEventListener('DOMContentLoaded', () => {
   uiMain()
   sampleCode()
-  // tmpTestCode()
-  tmpTestCode2()
+  tmpTestCode()
+  // tmpTestCode2()
 })
