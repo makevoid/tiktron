@@ -1,14 +1,14 @@
+console.log("preload")
+
 const ipc = require('electron').ipcRenderer
-
-
 
 const loadVideo = ({ position }) => {
   console.log("loading video ")
   ipc.send('load-video', { position })
 }
 
-const transition = () => {
-  console.log("starting css animation to replace video")
+const transition = ({ direction }) => {
+  console.log("starting css animation - direction: ", direction)
   // send event
 }
 
@@ -16,40 +16,50 @@ const transition = () => {
 const actions = {
   nextVideo: (evt) => {
     loadVideo({ position: "next" })
+    transition({ direction: "next" })
   },
   prevVideo: (evt) => {
     loadVideo({ position: "prev" })
+    transition({ direction: "prev" })
   }
 }
 
 // renderers get data from ipc events data and update the UI
 const renderers = {
-  loadVideo: (data) => {
+  loadVideo: ({ video, videoElems }) => {
+    console.log("render next/prev video")
 
-  }
+    const { vidMain } = videoElems
+    // const { vidMain, vidPrev, vidNext } = videoElems // TODO: set prev/next videos as well to enable fast switch
+    vidMain.src = video.videoUrl
+  },
+  // loadVideo: (data) => {
+  //   ...
+  // },
 }
 
-const bindEvents = () => {
+const bindEvents = ({ videoElems }) => {
   ipc.on('load-video-reply', (event, data) => {
-    console.log("data: ", data)
-    renderers.loadVideo(data)
+    const { video, state } = data
+    console.log("video: ", video)
+    console.log("state: ", state)
+    renderers.loadVideo({ video, videoElems })
   })
 
   // ipc.once...
 }
 
 const bindMainButtons = ({ buttons }) => {
-  buttons.prevButton.addEventListener("click", actions.prevVideo)
-  buttons.nextButton.addEventListener("click", actions.nextVideo)
+  const { prevButton, nextButton } = buttons
+  prevButton.addEventListener("click", actions.prevVideo)
+  nextButton.addEventListener("click", actions.nextVideo)
 }
 
-const bindVideoTags = () => {
-  var vidMain = document.querySelector("video.video-main")
-  var vidNext = document.querySelector("video.video-next")
-  var vidPrev = document.querySelector("video.video-prev")
+const bindVideoTags = ({ videoElems }) => {
+  const { vidMain, vidPrev, vidNext } = videoElems
   vidMain.volume = 0 // muted
   // vidMain.volume = 1 // 100%
-  vidMain //...
+  vidMain // ... TODO implement
 }
 
 const uiMain = () => {
@@ -57,11 +67,15 @@ const uiMain = () => {
     prevButton: document.querySelector(".arrow.arrow-left"),
     nextButton: document.querySelector(".arrow.arrow-right"),
   }
+  const videoElems = {
+    vidMain: document.querySelector("video.video-main"),
+    vidPrev: document.querySelector("video.video-prev"),
+    vidNext: document.querySelector("video.video-next"),
+  }
   bindMainButtons({ buttons })
-  bindVideoTags()
-  bindEvents()
+  bindVideoTags({ videoElems })
+  bindEvents({ videoElems })
 }
-
 
 const sampleCode = () => {
   const replaceText = (selector, text) => {
@@ -74,7 +88,26 @@ const sampleCode = () => {
   }
 }
 
+const tmpTestCode = () => {
+  setTimeout(() => {
+    console.log("simulating click next")
+    const elem = document.querySelector("a.arrow.arrow-right")
+    elem.click()
+  }, 4000)
+}
+
+
+const tmpTestCode2 = () => {
+  setInterval(() => {
+    console.log("simulating click next")
+    const elem = document.querySelector("a.arrow.arrow-right")
+    elem.click()
+  }, 7000)
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   uiMain()
   sampleCode()
+  // tmpTestCode()
+  tmpTestCode2()
 })
