@@ -3,6 +3,13 @@ const path = require('path')
 const tt = require('tiktok-scraper')
 const ipc = require('electron').ipcMain
 
+// App configuration
+
+class AppConfig {}
+const CONF = new AppConfig
+CONF.devToolsOpen = false
+// CONF.devToolsOpen = true
+
 // State initialization
 
 class State {}
@@ -151,16 +158,18 @@ const main = () => {
 
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 730,
+    // 720*1280 - 80%
+    width: 576,
+    height: 1024,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   })
 
+
   mainWindow.loadFile('index.html')
 
-  mainWindow.webContents.openDevTools()
+  if (CONF.devToolsOpen) mainWindow.webContents.openDevTools()
 
   main()
 }

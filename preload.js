@@ -58,6 +58,7 @@ const bindMainButtons = ({ buttons }) => {
 const bindVideoTags = ({ videoElems }) => {
   const { vidMain, vidPrev, vidNext } = videoElems
   vidMain.volume = 0 // muted
+  vidMain.volume = 0.25 // low
   // vidMain.volume = 1 // 100%
   vidMain // ... TODO implement
 }

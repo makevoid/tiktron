@@ -9,7 +9,7 @@ p, .title {
 
 .arrow {
   position: absolute;
-  top: 220px; /* TODO: center position via flexbox */
+  top: 370px; /* TODO: center position via flexbox */
   width: 40px;
   height: 55px;
   background: rgba(100, 100, 100, 0.4);
