@@ -44,16 +44,23 @@ const reducers = {
 const actions = {
   nextVideo: async (evt) => {
     const { resource, query, idxCurrent } = getState()
-    const idx = idxCurrent + 1
+    let idx = idxCurrent + 1
     const video = await loadVideo({ resource, query, idx })
     reducers.updateIdx({ idx })
     return video
   },
   prevVideo: async (evt) => {
-    const { resource, query } = getState()
-    const idx = idxCurrent - 1
+    const { resource, query, idxCurrent } = getState()
+    let idx = idxCurrent - 1
+    if (idx < 0) idx = 0 
     const video = await loadVideo({ resource, query, idx })
     reducers.updateIdx({ idx })
+    return video
+  },
+  firstVideo: async (evt) => {
+    const { resource, query } = getState()
+    const idx = 0
+    const video = await loadVideo({ resource, query, idx })
     return video
   },
 }
@@ -63,8 +70,23 @@ const bindEventsIPC = () => {
     console.log("got video")
     console.log("data:", data)
     // loadVideo() ...
+    const { position } = data
+    console.log("position:", position)
 
-    const video = await actions.nextVideo(evt)
+    let video
+    switch (position) {
+      case "next":
+          video = await actions.nextVideo(evt)
+        break;
+      case "prev":
+          video = await actions.prevVideo(evt)
+        break;
+      case "first":
+          video = await actions.firstVideo(evt)
+        break;
+      default:
+        throw new Error("position not recognized - valid options: first, next, prev")
+    }
 
     // const { id, name, nickname, avatar, covers, videoUrl, webVideoUrl, playCount, shareCount
     // } = video
@@ -93,7 +115,7 @@ const ttCall = async ({ resource, query, ttOptions }) => {
       return await tt.hashtag(hashtag, ttOptions)
       break;
     case "trending":
-      const trend = query
+      const trend = null
       return await tt.trending(trend, ttOptions)
       break;
     default:
@@ -140,18 +162,27 @@ const loadVideo = async ({ resource, query, idx }) => {
 const main = () => {
   bindEventsIPC()
 
-  ;(async () => {
-    const hashtag = "doge"
-    const username = "makevoid"
-    // minCursor - param - TODO: pagination - fork library
-
-    // resources: users, hashtags, trending
-    const idx       = STATE.idxCurrent
-    const resource  = STATE.resource
-    const query     = STATE.query
-
-    loadVideo({ resource, query, idx })
-  })()
+  // TODO: remove code
+  //
+  // ;(async () => {
+  //   const hashtag = "doge"
+  //   const username = "makevoid"
+  //   // minCursor - param - TODO: pagination - fork library
+  //
+  //   // // resources: users, hashtags, trending
+  //   // const idx       = STATE.idxCurrent
+  //   // const resource  = STATE.resource
+  //   // const query     = STATE.query
+  //   //
+  //   // const video = await loadVideo({ resource, query, idx })
+  //   // const idxCurrent = idx
+  //   //
+  //   // const videoData = {
+  //   //   video: video,
+  //   //   state: { resource, query, idxCurrent },
+  //   // }
+  //   // ipc.send('load-video-reply', videoData)
+  // })()
 }
 
 // electron window management
@@ -165,7 +196,6 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-
 
   mainWindow.loadFile('index.html')
 

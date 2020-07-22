@@ -21,6 +21,9 @@ const actions = {
   prevVideo: (evt) => {
     loadVideo({ position: "prev" })
     transition({ direction: "prev" })
+  },
+  search: (evt) => {
+    console.log("Searched for ...")
   }
 }
 
@@ -38,12 +41,18 @@ const renderers = {
   // },
 }
 
+const hideLoadingMsg = () => {
+  const loadingElem = document.querySelector(".loading")
+  loadingElem.style.display = "none"
+}
+
 const bindEvents = ({ videoElems }) => {
   ipc.on('load-video-reply', (event, data) => {
     const { video, state } = data
     console.log("video: ", video)
     console.log("state: ", state)
     renderers.loadVideo({ video, videoElems })
+    hideLoadingMsg()
   })
 
   // ipc.once...
@@ -74,6 +83,15 @@ const bindHotkeys = () => {
   })
 }
 
+const bindSearchForm = ({ searchForm, searchQueryElem }) => {
+  const query = searchQueryElem.value
+  const search = (evt) => {
+    evt.preventDefault()
+    actions.search({ query })
+  }
+  searchForm.addEventListener("submit", search)
+}
+
 const uiMain = () => {
   const buttons = {
     prevButton: document.querySelector(".arrow.arrow-left"),
@@ -84,8 +102,11 @@ const uiMain = () => {
     vidPrev: document.querySelector("video.video-prev"),
     vidNext: document.querySelector("video.video-next"),
   }
+  const searchForm = document.querySelector("form.search-form")
+  const searchQueryElem = document.querySelector("form.search-form > .field > .control > input")
   bindMainButtons({ buttons })
   bindVideoTags({ videoElems })
+  bindSearchForm({ searchForm, searchQueryElem })
   bindEvents({ videoElems })
   bindHotkeys()
 }
@@ -119,7 +140,10 @@ const tmpTestCode = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   uiMain()
+
+  loadVideo({ position: "first" })
+
   sampleCode()
-  tmpTestCode()
+  // tmpTestCode()
   // tmpTestCode2()
 })

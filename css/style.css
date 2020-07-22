@@ -1,3 +1,20 @@
+/* helpers */
+
+.s10 { height: 10px; }
+.s20 { height: 20px; }
+.s30 { height: 30px; }
+.s40 { height: 40px; }
+.s50 { height: 50px; }
+.s60 { height: 60px; }
+.s70 { height: 70px; }
+.s80 { height: 80px; }
+.s90 { height: 90px; }
+.s100 { height: 100px; }
+
+.width-80 { width: 80%; }
+
+/* colors */
+
 html, body {
   background: #111111;
   color: #EEEEEE;
@@ -6,6 +23,8 @@ html, body {
 p, .title {
   color: #EEEEEE;
 }
+
+/* nav */
 
 .arrow {
   position: absolute;
@@ -38,7 +57,21 @@ a.arrow {
   right: 0px; /* width of the button */
 }
 
+/* style */
+
 h1.title {
   font-size: 1em;
   padding: 10px 0 10px 0;
+}
+
+.center {
+  margin: 200px auto;
+  text-align: center;
+  background: rgba(100, 100, 100, 0.3);
+  padding: 20px 40px;
+  width: 50%
+}
+
+video {
+  width: 100%;
 }
