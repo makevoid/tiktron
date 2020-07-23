@@ -1,6 +1,16 @@
-console.log("preload")
+// TODO: use a preprocessor to build this file from parts
 
-const ipc = require('electron').ipcRenderer
+// ipc.js
+const { ipcRenderer } = require('electron')
+// module.exports = {
+//   ipc: ipcRenderer,
+// }
+// --
+// const ipc = require('./ipc.js')
+
+const ipc = ipcRenderer
+
+// models
 
 const loadVideo = ({ position }) => {
   console.log("loading video ")
@@ -17,6 +27,9 @@ const transition = ({ direction }) => {
   // send event
 }
 
+
+// actions.js
+
 // actions trigger an ipc call to the backend
 const actions = {
   nextVideo: () => {
@@ -32,24 +45,30 @@ const actions = {
   }
 }
 
-// renderers get data from ipc events data and update the UI
-const renderers = {
-  loadVideo: ({ video, videoElems }) => {
-    console.log("render next/prev video")
+//
 
-    const { vidMain } = videoElems
-    // const { vidMain, vidPrev, vidNext } = videoElems // TODO: set prev/next videos as well to enable fast switch
-    vidMain.src = video.videoUrl
-  },
-  // loadVideo: (data) => {
-  //   ...
-  // },
-}
+// renderers.js
 
 const hideLoadingMsg = () => {
   const loadingElem = document.querySelector(".loading")
   loadingElem.style.display = "none"
 }
+
+const loadVideoRenderer = ({ video, videoElems }) => {
+  console.log("render next/prev video")
+
+  const { vidMain } = videoElems
+  // const { vidMain, vidPrev, vidNext } = videoElems // TODO: set prev/next videos as well to enable fast switch
+  vidMain.src = video.videoUrl
+}
+
+// renderers get data from ipc events data and update the UI
+const renderers = {
+  loadVideo: loadVideoRenderer,
+  hideLoadingMsg: hideLoadingMsg,
+}
+
+// bindings.js (event bindings)
 
 const bindEvents = ({ videoElems }) => {
   ipc.on('load-video-reply', (event, data) => {
@@ -57,7 +76,7 @@ const bindEvents = ({ videoElems }) => {
     console.log("video: ", video)
     console.log("state: ", state)
     renderers.loadVideo({ video, videoElems })
-    hideLoadingMsg()
+    renderers.hideLoadingMsg()
   })
 
   // ipc.once...
@@ -97,6 +116,8 @@ const bindSearchForm = ({ searchForm, searchQueryElem }) => {
   searchForm.addEventListener("submit", search)
 }
 
+// preload - ui-main.js (file name tbd)
+
 const uiMain = () => {
   const buttons = {
     prevButton: document.querySelector(".arrow.arrow-left"),
@@ -116,39 +137,12 @@ const uiMain = () => {
   bindHotkeys()
 }
 
-const sampleCode = () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector)
-    if (element) element.innerText = text
-  }
+const main = () => {
+  window.addEventListener('DOMContentLoaded', () => {
+    uiMain()
 
-  for (const type of ['chrome', 'node', 'electron']) {
-    replaceText(`${type}-version`, process.versions[type])
-  }
+    loadVideo({ position: "first" })
+  })
 }
 
-const tmpTestCode = () => {
-  setTimeout(() => {
-    console.log("simulating click next")
-    const elem = document.querySelector("a.arrow.arrow-right")
-    elem.click()
-  }, 4000)
-}
-
-// const tmpTestCode2 = () => {
-//   setInterval(() => {
-//     console.log("simulating click next")
-//     const elem = document.querySelector("a.arrow.arrow-right")
-//     elem.click()
-//   }, 7000)
-// }
-
-window.addEventListener('DOMContentLoaded', () => {
-  uiMain()
-
-  loadVideo({ position: "first" })
-
-  sampleCode()
-  // tmpTestCode()
-  // tmpTestCode2()
-})
+main()

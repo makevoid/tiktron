@@ -8,7 +8,19 @@ const ipc = require('electron').ipcMain
 class AppConfig {}
 const CONF = new AppConfig
 CONF.devToolsOpen = false
-CONF.devToolsOpen = true
+// CONF.devToolsOpen = true
+
+// TODO: add windowDimensions as config - refactor notes
+
+// notes:
+// 720*1280 - tt res
+// width: 576, height: 1024 - 80% of tt res (1024px height constraint)
+
+const windowDimensions = {
+  width: 520,
+  height: 1024,
+}
+
 
 // State initialization
 
@@ -190,17 +202,16 @@ const loadVideo = async ({ resource, query, idx }) => {
 
 // main
 
-const main = () => {
+const appMain = () => {
   bindEventsIPC()
 }
 
-// electron window management
+// browserwindow.js
 
-const createWindow = () => {
+const createAppWindow = () => {
   const mainWindow = new BrowserWindow({
-    // 720*1280 - 80%
-    width: 576,
-    height: 1024,
+    width: windowDimensions.width,
+    height: windowDimensions.height,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
@@ -210,18 +221,29 @@ const createWindow = () => {
 
   if (CONF.devToolsOpen) mainWindow.webContents.openDevTools()
 
-  main()
+  appMain()
 }
 
-app.whenReady().then(() => {
-  createWindow()
+// module.exports = {
+//   createAppWindow
+// }
 
-  // macos fix
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+
+// electron browserwindow
+
+const main = () => {
+  app.whenReady().then(() => {
+    createAppWindow()
+
+    // macos fix
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
   })
-})
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+  })
+}
+
+main()
