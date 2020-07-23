@@ -2,34 +2,15 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const tt = require('tiktok-scraper')
 const ipc = require('electron').ipcMain
+const CONF = require('./config/app')
+const windowDimensions = require('./config/window')
+const STATE = require('./state')
 
-// App configuration
-
-class AppConfig {}
-const CONF = new AppConfig
-CONF.devToolsOpen = false
-// CONF.devToolsOpen = true
-
-// TODO: add windowDimensions as config - refactor notes
-
-// notes:
-// 720*1280 - tt res
-// width: 576, height: 1024 - 80% of tt res (1024px height constraint)
-
-const windowDimensions = {
-  width: 520,
-  height: 1024,
-}
+// CONF.devToolsOpen = true // (false by default)
 
 
-// State initialization
 
-class State {}
-const STATE = new State()
 
-STATE.idxCurrent  = 0
-STATE.resource    = "users" // resources: users, hashtags, trending
-STATE.query       = "makevoid"
 
 // utils - extract
 const mergeObjects = Object.assign
