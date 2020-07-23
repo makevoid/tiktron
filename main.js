@@ -8,10 +8,6 @@ const STATE = require('./state')
 
 // CONF.devToolsOpen = true // (false by default)
 
-
-
-
-
 // utils - extract
 const mergeObjects = Object.assign
 
@@ -208,7 +204,6 @@ const createAppWindow = () => {
 // module.exports = {
 //   createAppWindow
 // }
-
 
 // electron browserwindow
 
