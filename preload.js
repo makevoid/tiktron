@@ -7,6 +7,11 @@ const loadVideo = ({ position }) => {
   ipc.send('load-video', { position })
 }
 
+const submitSearch = ({ query }) => {
+  console.log("submitting search", query)
+  ipc.send('search', { query })
+}
+
 const transition = ({ direction }) => {
   console.log("starting css animation - direction: ", direction)
   // send event
@@ -14,16 +19,16 @@ const transition = ({ direction }) => {
 
 // actions trigger an ipc call to the backend
 const actions = {
-  nextVideo: (evt) => {
+  nextVideo: () => {
     loadVideo({ position: "next" })
     transition({ direction: "next" })
   },
-  prevVideo: (evt) => {
+  prevVideo: () => {
     loadVideo({ position: "prev" })
     transition({ direction: "prev" })
   },
-  search: (evt) => {
-    console.log("Searched for ...")
+  search: ({ query }) => {
+    submitSearch({ query })
   }
 }
 
@@ -84,9 +89,9 @@ const bindHotkeys = () => {
 }
 
 const bindSearchForm = ({ searchForm, searchQueryElem }) => {
-  const query = searchQueryElem.value
   const search = (evt) => {
     evt.preventDefault()
+    const query = searchQueryElem.value
     actions.search({ query })
   }
   searchForm.addEventListener("submit", search)

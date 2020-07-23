@@ -8,7 +8,7 @@ const ipc = require('electron').ipcMain
 class AppConfig {}
 const CONF = new AppConfig
 CONF.devToolsOpen = false
-// CONF.devToolsOpen = true
+CONF.devToolsOpen = true
 
 // State initialization
 
@@ -38,35 +38,62 @@ const getState = () => {
 const reducers = {
   updateIdx: ({ idx }) => {
     STATE.idxCurrent = idx
-  }
+  },
+  updateQuery: ({ resource, query }) => {
+    STATE.resource = resource
+    STATE.query = query
+  },
 }
 
 const actions = {
-  nextVideo: async (evt) => {
+  nextVideo: async () => {
     const { resource, query, idxCurrent } = getState()
     let idx = idxCurrent + 1
     const video = await loadVideo({ resource, query, idx })
     reducers.updateIdx({ idx })
     return video
   },
-  prevVideo: async (evt) => {
+  prevVideo: async () => {
     const { resource, query, idxCurrent } = getState()
     let idx = idxCurrent - 1
-    if (idx < 0) idx = 0 
+    if (idx < 0) idx = 0
     const video = await loadVideo({ resource, query, idx })
     reducers.updateIdx({ idx })
     return video
   },
-  firstVideo: async (evt) => {
+  firstVideo: async () => {
     const { resource, query } = getState()
     const idx = 0
     const video = await loadVideo({ resource, query, idx })
     return video
   },
+  loadSearch: async ({ resource, query }) => {
+    let idx = 0
+    const video = await loadVideo({ resource, query, idx })
+    reducers.updateIdx({ idx })
+    reducers.updateQuery({ resource, query })
+    return video
+  },
 }
 
 const bindEventsIPC = () => {
+  ipc.on('search', async (evt, data) => {
+    const { query } = data
+    const resource = "hashtags"
+    const video = await actions.loadSearch({ resource, query })
+    // evt.sender.send('search-reply', data)
+
+    const { idxCurrent } = getState()
+    const videoData = {
+      video: video,
+      state: { resource, query, idxCurrent },
+    }
+    evt.sender.send('load-video-reply', videoData)
+  })
+
   ipc.on('load-video', async (evt, data) => {
+    // TODO: refactor event
+
     console.log("got video")
     console.log("data:", data)
     // loadVideo() ...
@@ -140,10 +167,14 @@ const loadVideo = async ({ resource, query, idx }) => {
   // TODO: refactor / fix
   // const ttParse({ result }) => { // ... }
   const users = collector
+  console.log("users:", users)
   const user = users[idx]
-  // console.log("user:", user)
 
-  const { id, name, nickname, avatar, covers, videoUrl, webVideoUrl, playCount, shareCount } = user
+  const { id, name, nickname, avatar, covers, videoUrl, webVideoUrl, playCount, shareCount, commentCount } = user
+  // authorMeta
+  //   nickName
+  //   avatar
+
   const { default: defaultCover } = covers
   console.log(`'load-video-reply' evt ready`)
   console.log(`video id: ${id}`)
@@ -161,28 +192,6 @@ const loadVideo = async ({ resource, query, idx }) => {
 
 const main = () => {
   bindEventsIPC()
-
-  // TODO: remove code
-  //
-  // ;(async () => {
-  //   const hashtag = "doge"
-  //   const username = "makevoid"
-  //   // minCursor - param - TODO: pagination - fork library
-  //
-  //   // // resources: users, hashtags, trending
-  //   // const idx       = STATE.idxCurrent
-  //   // const resource  = STATE.resource
-  //   // const query     = STATE.query
-  //   //
-  //   // const video = await loadVideo({ resource, query, idx })
-  //   // const idxCurrent = idx
-  //   //
-  //   // const videoData = {
-  //   //   video: video,
-  //   //   state: { resource, query, idxCurrent },
-  //   // }
-  //   // ipc.send('load-video-reply', videoData)
-  // })()
 }
 
 // electron window management
