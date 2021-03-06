@@ -4,7 +4,9 @@ Electron desktop tiktok app based on tiktok-scraper npm module
 
 ---
 
-Status: in development
+Status: working version
+
+Note: TikTok recently added a new video fetch policy that doesn't allow videos to be seen/embeded on other websites/apps - currently the app is not working, until TikTok changes its policy or releases a new video url which can be embeddable / usable by other apps.
 
 ### Run
 
